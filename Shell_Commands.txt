@@ -1,0 +1,32 @@
+Change the kafka confifuratio to use port 2182 instead of 2182.
+
+Create the log directories that we configured:
+/home/cloudera/kafka/logs/zookeeper-gc.log
+/home/cloudera/kafka/logs/kafka-gc.log
+
+Run zookeeper server
+./bin/zookeeper-server-start.sh config/zookeeper.properties
+
+Run kafka server
+./bin/kafka-server-start.sh config/server.properties
+
+To list all the topics created after we run Kafka Producer project
+./bin/kafka-topics.sh --list --bootstrap-server localhost:9092
+
+To start the HBase master
+sudo service hbase-master start
+
+To start the HBase regionserver
+sudo service hbase-regionserver start
+
+Creating the External table using hive environment
+CREATE EXTERNAL TABLE TweetCount (tweet_type STRING, count INT) COMMENT 'Spark Hive Tale' 
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde' WITH SERDEPROPERTIES("SEPERATOR" = ",", "QUOTECHAR"="\"", "ESCAPECHAR"="\"") 
+STORED AS TEXTFILE location '/user/cloudera/SparkTableCount' TBLPROPERTIES("skip.header.line.count"="1");
+
+CREATE EXTERNAL TABLE TweetResult (key STRING, user STRING, tweet_type STRING, keyword STRING)
+ COMMENT 'Spark Hive Tale' ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde' WITH 
+ SERDEPROPERTIES("SEPERATOR" = ",", "QUOTECHAR"="\"", "ESCAPECHAR"="\"") STORED AS TEXTFILE 
+ location '/user/cloudera/SparkTableResult' TBLPROPERTIES("skip.header.line.count"="1");
+
+
